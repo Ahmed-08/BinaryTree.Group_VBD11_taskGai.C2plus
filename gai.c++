@@ -18,41 +18,85 @@ public:
     BinaryTree() : root{nullptr}
     {}
 
+    ~BinaryTree();
+
     // получить узел
     Gai* getRoot()const { return this->root; }
 
     // добавляем правонарушение
-    BinaryTree add(std::string number_auto, std::string offense);
+    void add(std::string number_auto, std::string offense);
 
     // поиск автомобиял в дереве
     Gai* search(std::string numberAuto);
     // печать дерева
+
+    // очистить
+    void clear();
+
+    // вывести всё
     void print(Gai* temp);
 
     // выводим нарушения по номеру авто
     void print(std::string numberAuto);
-
-
+    
 private:
     Gai* root;
 };
 
-BinaryTree BinaryTree::add(std::string number_auto, std::string offense)
+void BinaryTree::clear()
+{
+    Gai* temp = this->root;
+    Gai* t{nullptr};
+    while (temp != nullptr)
+    {
+        t = temp->parent;
+        if(temp->left == nullptr && temp->right == nullptr)
+        {
+            if(temp == this->root)
+            {
+                delete temp;
+                temp = nullptr;
+                this->root = nullptr;
+                return;
+            }
+            if(temp == t->left)
+                t->left = nullptr;
+            else t->right = nullptr;
+            delete temp;
+            temp = t;
+        }
+        else if(temp->right != nullptr)
+        {
+            temp = temp->right;
+        }
+        else if(temp->left != nullptr)
+        {
+            temp = temp->left;
+        }
+    }
+}
+
+BinaryTree::~BinaryTree()
+{
+    this->clear();
+}
+
+void BinaryTree::add(std::string number_auto, std::string offense)
 {
     // если дерево пусто
-    if (root == nullptr)
+    if (this->root == nullptr)
     {
-        root = new Gai{};
-        root->numberAuto = number_auto;
-        root->offense.push_back(offense);
-        root->left = nullptr;
-        root->right = nullptr;
-        root->parent = nullptr;
+        this->root = new Gai{};
+        this->root->numberAuto = number_auto;
+        this->root->offense.push_back(offense);
+        this->root->left = nullptr;
+        this->root->right = nullptr;
+        this->root->parent = nullptr;
     }
     else
     {
-        // если в дереве уже имеются правонарушения
-        Gai* temp = root;
+        // если в дереве уже имеются узлы
+        Gai* temp = this->root;
         Gai* y = nullptr;
         while (temp != nullptr)
         {
@@ -68,35 +112,32 @@ BinaryTree BinaryTree::add(std::string number_auto, std::string offense)
                 // если авто с таким номером уже существует в дереве
                 // то добавляем нарушение в его список правонарушений
                 temp->offense.push_back(offense);
-                return *this;
+                return;
             }
         }
 
         // если такого номера в дереве нет
         // то создаем новый узел
-        Gai* newOffense = new Gai{};
+        temp = new Gai{};
         // добавляем номер и нарушение в узел
-        newOffense->numberAuto = number_auto;
-        newOffense->offense.push_back(offense);
-        newOffense->left = nullptr;
-        newOffense->right = nullptr;
+        temp->numberAuto = number_auto;
+        temp->offense.push_back(offense);
+        temp->left = nullptr;
+        temp->right = nullptr;
 
         // указываем родителя
-        newOffense->parent = y;
-
+        temp->parent = y;
         // если номер больше то добавляем вправо от родителя
         // иначе влево
-        if (newOffense->numberAuto > y->numberAuto)
-            y->right = newOffense;
+        if (temp->numberAuto > y->numberAuto)
+            y->right = temp;
         else
         {
-            y->left = newOffense;
+            y->left = temp;
         }
     }
-
-    // возвращаем сам объект
-    return *this;
 }
+
 
 Gai* BinaryTree::search(std::string numberAuto)
 {
@@ -152,7 +193,8 @@ void BinaryTree::print(std::string numberAuto)
 int main()
 {
     BinaryTree listOffense;
-    listOffense.add("A771EO69", "не пропустил пешехода!").add("O137TT69", "проехал на красный!");
+    listOffense.add("A771EO69", "не пропустил пешехода!");
+    listOffense.add("O137TT69", "проехал на красный!");
     listOffense.add("A777AA69", "превышение скорости!");
     listOffense.add("A777AA69", "проехал на красный!");
     listOffense.add("A777AA69", "двойная сплошная!");
@@ -160,6 +202,6 @@ int main()
     std::cout << "------------------------------------------\n";
     listOffense.print("A777AA69");
     listOffense.print("A771AA69");
-
+    
     return 0;
 }
