@@ -15,9 +15,9 @@ class BinaryTree
 {
 public:
     // конструктор без параметров
-    BinaryTree() : root{nullptr}
-    {}
+    BinaryTree();
 
+    // деструктор
     ~BinaryTree();
 
     // получить узел
@@ -43,38 +43,8 @@ private:
     Gai* root;
 };
 
-void BinaryTree::clear()
-{
-    Gai* temp = this->root;
-    Gai* t{nullptr};
-    while (temp != nullptr)
-    {
-        t = temp->parent;
-        if(temp->left == nullptr && temp->right == nullptr)
-        {
-            if(temp == this->root)
-            {
-                delete temp;
-                temp = nullptr;
-                this->root = nullptr;
-                return;
-            }
-            if(temp == t->left)
-                t->left = nullptr;
-            else t->right = nullptr;
-            delete temp;
-            temp = t;
-        }
-        else if(temp->right != nullptr)
-        {
-            temp = temp->right;
-        }
-        else if(temp->left != nullptr)
-        {
-            temp = temp->left;
-        }
-    }
-}
+BinaryTree::BinaryTree(): root{nullptr}
+{}
 
 BinaryTree::~BinaryTree()
 {
@@ -134,6 +104,39 @@ void BinaryTree::add(std::string number_auto, std::string offense)
         else
         {
             y->left = temp;
+        }
+    }
+}
+
+void BinaryTree::clear()
+{
+    Gai* temp = this->root;
+    Gai* t{nullptr};
+    while (temp != nullptr)
+    {
+        t = temp->parent;
+        if(temp->left == nullptr && temp->right == nullptr)
+        {
+            if(temp == this->root)
+            {
+                delete temp;
+                temp = nullptr;
+                this->root = nullptr;
+                return;
+            }
+            if(temp == t->left)
+                t->left = nullptr;
+            else t->right = nullptr;
+            delete temp;
+            temp = t;
+        }
+        else if(temp->right != nullptr)
+        {
+            temp = temp->right;
+        }
+        else if(temp->left != nullptr)
+        {
+            temp = temp->left;
         }
     }
 }
