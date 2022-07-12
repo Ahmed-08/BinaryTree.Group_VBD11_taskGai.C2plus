@@ -28,7 +28,6 @@ public:
 
     // поиск автомобиял в дереве
     Gai* search(std::string numberAuto);
-    // печать дерева
 
     // очистить
     void clear();
